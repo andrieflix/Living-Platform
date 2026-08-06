@@ -5,9 +5,9 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ["**/dist/**", "**/node_modules/**", "**/*.d.ts", "scripts/**", "netlify/functions/**"],
+    ignores: ["**/dist/**", "**/node_modules/**", "**/*.d.ts", "scripts/**", "netlify/functions/**", ".next/**", "app/**"],
   },
-  // Domain: must not import any other @livingsites package or @netlify/database
+  // Domain: must not import any other @livingsites package, @netlify/database, or better-auth
   {
     files: ["packages/domain/src/**/*.ts"],
     rules: {
@@ -17,12 +17,13 @@ export default tseslint.config(
           patterns: [
             { group: ["@livingsites/*"], message: "Domain must not import any @livingsites package. Domain depends on nothing." },
             { group: ["@netlify/*"], message: "Domain must not import @netlify packages." },
+            { group: ["better-auth", "better-auth/*"], message: "Domain must not import Better Auth." },
           ],
         },
       ],
     },
   },
-  // Application: must not import Composition, Infrastructure, test-support, or @netlify/database
+  // Application: must not import Composition, Infrastructure, test-support, @netlify/database, or better-auth
   {
     files: ["packages/application/src/**/*.ts"],
     rules: {
@@ -34,11 +35,13 @@ export default tseslint.config(
             { name: "@livingsites/infrastructure", message: "Application must not import Infrastructure." },
             { name: "@livingsites/test-support", message: "Application must not import test-support." },
             { name: "@netlify/database", message: "Application must not import @netlify/database." },
+            { name: "better-auth", message: "Application must not import Better Auth." },
           ],
           patterns: [
             { group: ["@livingsites/infrastructure", "@livingsites/infrastructure/*"], message: "Application must not import Infrastructure." },
             { group: ["@livingsites/test-support", "@livingsites/test-support/*"], message: "Application must not import test-support." },
             { group: ["@netlify/*"], message: "Application must not import @netlify packages." },
+            { group: ["better-auth", "better-auth/*"], message: "Application must not import Better Auth." },
           ],
         },
       ],
@@ -77,7 +80,7 @@ export default tseslint.config(
     },
   },
   // Infrastructure production code (non-test): must not import Composition or test-support
-  // @netlify/database is ALLOWED here — Infrastructure owns the provider
+  // @netlify/database and better-auth are ALLOWED here — Infrastructure owns the provider adapter
   {
     files: ["packages/infrastructure/src/**/*.ts"],
     ignores: ["**/*.test.ts"],

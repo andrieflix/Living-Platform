@@ -6,6 +6,7 @@
  */
 import type {
   UserId,
+  AuthSubjectId,
   MembershipId,
   OrganizationId,
   ISODateString,
@@ -17,6 +18,12 @@ import type {
 /** Platform-level user identity. Not scoped to any single organization. */
 export interface User {
   readonly id: UserId;
+  /**
+   * Opaque reference to the authentication-provider subject that owns this
+   * platform identity. Unique across all Platform Users. The Domain never
+   * imports the auth provider — it only stores this linkage.
+   */
+  authSubjectId: AuthSubjectId;
   /** Unique login email, lowercased. */
   email: string;
   /** Display name shown in UI. */

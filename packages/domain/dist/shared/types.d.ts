@@ -25,6 +25,12 @@ export type SectionTypeId = Brand<string, "SectionTypeId">;
 export type ThemeId = Brand<string, "ThemeId">;
 /** Canonical identifier for a User. */
 export type UserId = Brand<string, "UserId">;
+/**
+ * Opaque identifier for an authentication-provider subject (e.g. Better Auth's
+ * internal user ID). The Domain never imports the auth provider; it only stores
+ * this opaque reference to link a Platform User to its authentication identity.
+ */
+export type AuthSubjectId = Brand<string, "AuthSubjectId">;
 /** Canonical identifier for a Membership. */
 export type MembershipId = Brand<string, "MembershipId">;
 /** Canonical identifier for a Media asset. */

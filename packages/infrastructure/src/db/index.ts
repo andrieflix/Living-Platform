@@ -15,6 +15,12 @@ export {
   featureCategoryEnum,
   planFeatureEntitlements,
   applicationOutbox,
+  platformUsers,
+  userStatusEnum,
+  betterAuthUsers,
+  betterAuthSessions,
+  betterAuthAccounts,
+  betterAuthVerifications,
 } from "./schema";
 export { createDbConnection } from "./connection";
 export type { DatabaseConfig, DbConnection } from "./connection";

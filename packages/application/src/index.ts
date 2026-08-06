@@ -15,6 +15,7 @@
  * failures belong to Application contracts.
  */
 export * from "./contracts";
+export * from "./identity";
 export * from "./repositories";
 export * from "./services";
 export * from "./use-cases";

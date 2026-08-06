@@ -9,13 +9,17 @@ import type { Logger } from "@livingsites/platform";
 import {
   InMemoryOrganizationRepository,
   InMemoryPlanRepository,
+  InMemoryUserRepository,
+  FakeAuthenticationAdapter,
+  CapturingVerificationEmailAdapter,
   InMemoryEventPublisher,
 } from "@livingsites/test-support";
-import { createOrganization } from "@livingsites/application";
-import type { CreateOrganizationDeps } from "@livingsites/application";
+import { createOrganization, registerUser } from "@livingsites/application";
+import type { CreateOrganizationDeps, RegisterUserDeps } from "@livingsites/application";
 
 export interface TestCompositionConfig {
   readonly initialClockMs?: number;
+  readonly registrationMode?: "open" | "invite_only" | "disabled";
 }
 
 export interface TestComposition {
@@ -25,8 +29,13 @@ export interface TestComposition {
   readonly eventPublisher: InMemoryEventPublisher;
   readonly organizationRepository: InMemoryOrganizationRepository;
   readonly planRepository: InMemoryPlanRepository;
+  readonly userRepository: InMemoryUserRepository;
+  readonly authenticationPort: FakeAuthenticationAdapter;
+  readonly emailVerificationPort: CapturingVerificationEmailAdapter;
   readonly createOrganization: typeof createOrganization;
   readonly createOrganizationDeps: CreateOrganizationDeps;
+  readonly registerUser: typeof registerUser;
+  readonly registerUserDeps: RegisterUserDeps;
 }
 
 export function composeTest(config: TestCompositionConfig = {}): TestComposition {
@@ -36,6 +45,9 @@ export function composeTest(config: TestCompositionConfig = {}): TestComposition
   const eventPublisher = new InMemoryEventPublisher();
   const organizationRepository = new InMemoryOrganizationRepository();
   const planRepository = new InMemoryPlanRepository();
+  const userRepository = new InMemoryUserRepository();
+  const authenticationPort = new FakeAuthenticationAdapter();
+  const emailVerificationPort = new CapturingVerificationEmailAdapter();
 
   const createOrganizationDeps: CreateOrganizationDeps = {
     organizationRepository,
@@ -45,6 +57,16 @@ export function composeTest(config: TestCompositionConfig = {}): TestComposition
     idGenerator,
   };
 
+  const registerUserDeps: RegisterUserDeps = {
+    authenticationPort,
+    userReader: userRepository,
+    userCreator: userRepository,
+    eventPublisher,
+    clock,
+    idGenerator,
+    registrationMode: config.registrationMode ?? "open",
+  };
+
   return {
     clock,
     idGenerator,
@@ -52,7 +74,12 @@ export function composeTest(config: TestCompositionConfig = {}): TestComposition
     eventPublisher,
     organizationRepository,
     planRepository,
+    userRepository,
+    authenticationPort,
+    emailVerificationPort,
     createOrganization,
     createOrganizationDeps,
+    registerUser,
+    registerUserDeps,
   };
 }

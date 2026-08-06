@@ -5,15 +5,15 @@
  * only. No event bus, no dispatcher, no runtime machinery — those are
  * infrastructure concerns for a future milestone.
  */
-import type { OrganizationId, WebsiteId, PageId, MediaId, FormId, SubmissionId, ExportJobId, ISODateString, VersionString } from "../shared";
+import type { OrganizationId, WebsiteId, PageId, MediaId, FormId, SubmissionId, ExportJobId, UserId, ISODateString, VersionString } from "../shared";
 /** Base shape every domain event implements. */
 export interface DomainEvent {
     /** Event type key, e.g. "page.published". */
     readonly type: string;
     /** When the event occurred (domain time, not delivery time). */
     readonly occurredAt: ISODateString;
-    /** The organization the event is scoped to. */
-    readonly organizationId: OrganizationId;
+    /** The organization the event is scoped to. Null for platform-level events (e.g. user events). */
+    readonly organizationId: OrganizationId | null;
     /** Optional: the website the event is scoped to. */
     readonly websiteId?: WebsiteId;
 }
@@ -69,6 +69,17 @@ export interface ExportCompletedEvent extends DomainEvent {
     readonly downloadUrl: string;
     readonly pagesCount: number;
 }
+export interface UserRegisteredEvent extends DomainEvent {
+    readonly type: "user.registered";
+    readonly userId: UserId;
+    readonly email: string;
+    readonly displayName: string;
+}
+export interface EmailVerifiedEvent extends DomainEvent {
+    readonly type: "user.email_verified";
+    readonly userId: UserId;
+    readonly email: string;
+}
 /** Union of all known domain events for exhaustive handling. */
-export type KnownDomainEvent = OrganizationCreatedEvent | WebsiteCreatedEvent | WebsitePublishedEvent | PagePublishedEvent | PageArchivedEvent | MediaUploadedEvent | FormSubmittedEvent | FeatureEnabledEvent | PluginInstalledEvent | ExportCompletedEvent;
+export type KnownDomainEvent = OrganizationCreatedEvent | WebsiteCreatedEvent | WebsitePublishedEvent | PagePublishedEvent | PageArchivedEvent | MediaUploadedEvent | FormSubmittedEvent | FeatureEnabledEvent | PluginInstalledEvent | ExportCompletedEvent | UserRegisteredEvent | EmailVerifiedEvent;
 //# sourceMappingURL=index.d.ts.map

@@ -86,7 +86,7 @@ export class OutboxEventPublisher {
             id: eventId,
             eventType: event.type,
             aggregateType: this.inferAggregateType(event.type),
-            aggregateId: String(event.organizationId),
+            aggregateId: event.organizationId ? String(event.organizationId) : String(event.userId ?? "platform"),
             organizationId: event.organizationId ? String(event.organizationId) : null,
             websiteId: event.websiteId ? String(event.websiteId) : null,
             payload,

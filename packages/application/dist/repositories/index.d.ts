@@ -7,6 +7,7 @@
  */
 export * from "./organization";
 export * from "./users";
+export * from "./user";
 export * from "./website";
 export * from "./page";
 export * from "./section";

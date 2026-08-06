@@ -13,6 +13,7 @@ import type {
   FormId,
   SubmissionId,
   ExportJobId,
+  UserId,
   ISODateString,
   VersionString,
 } from "../shared";
@@ -23,8 +24,8 @@ export interface DomainEvent {
   readonly type: string;
   /** When the event occurred (domain time, not delivery time). */
   readonly occurredAt: ISODateString;
-  /** The organization the event is scoped to. */
-  readonly organizationId: OrganizationId;
+  /** The organization the event is scoped to. Null for platform-level events (e.g. user events). */
+  readonly organizationId: OrganizationId | null;
   /** Optional: the website the event is scoped to. */
   readonly websiteId?: WebsiteId;
 }
@@ -91,6 +92,19 @@ export interface ExportCompletedEvent extends DomainEvent {
   readonly pagesCount: number;
 }
 
+export interface UserRegisteredEvent extends DomainEvent {
+  readonly type: "user.registered";
+  readonly userId: UserId;
+  readonly email: string;
+  readonly displayName: string;
+}
+
+export interface EmailVerifiedEvent extends DomainEvent {
+  readonly type: "user.email_verified";
+  readonly userId: UserId;
+  readonly email: string;
+}
+
 /** Union of all known domain events for exhaustive handling. */
 export type KnownDomainEvent =
   | OrganizationCreatedEvent
@@ -102,4 +116,6 @@ export type KnownDomainEvent =
   | FormSubmittedEvent
   | FeatureEnabledEvent
   | PluginInstalledEvent
-  | ExportCompletedEvent;
+  | ExportCompletedEvent
+  | UserRegisteredEvent
+  | EmailVerifiedEvent;

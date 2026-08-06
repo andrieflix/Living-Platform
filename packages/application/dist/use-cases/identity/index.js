@@ -1,8 +1,2 @@
-/**
- * Use case architecture placeholder.
- *
- * No interfaces, no implementations in this milestone. See README.md and
- * docs/use-cases.md for the catalog.
- */
-export const IDENTITY_USE_CASES = "";
+export * from "./register-user";
 //# sourceMappingURL=index.js.map
