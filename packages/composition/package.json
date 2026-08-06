@@ -1,0 +1,31 @@
+{
+  "name": "@livingsites/composition",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Composition root for the Living Sites platform. The single place where concrete implementations are assembled and wired.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@livingsites/domain": "0.0.0",
+    "@livingsites/application": "0.0.0",
+    "@livingsites/infrastructure": "0.0.0",
+    "@livingsites/platform": "0.0.0",
+    "@livingsites/test-support": "0.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

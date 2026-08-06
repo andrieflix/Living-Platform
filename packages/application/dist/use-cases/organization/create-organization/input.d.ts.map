@@ -1,0 +1,1 @@
+{"version":3,"file":"input.d.ts","sourceRoot":"","sources":["../../../../src/use-cases/organization/create-organization/input.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,qBAAqB,CAAC;AAElD,MAAM,WAAW,uBAAuB;IACtC,QAAQ,CAAC,IAAI,EAAE,MAAM,CAAC;IACtB,QAAQ,CAAC,IAAI,EAAE,MAAM,CAAC;IACtB,QAAQ,CAAC,YAAY,EAAE,MAAM,CAAC;IAC9B,QAAQ,CAAC,MAAM,CAAC,EAAE,MAAM,CAAC;CAC1B"}

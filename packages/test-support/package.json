@@ -1,0 +1,29 @@
+{
+  "name": "@livingsites/test-support",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Test-support adapters for the Living Sites platform. In-memory repositories, event publishers, and deterministic runtime for tests. Not for production use.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@livingsites/domain": "0.0.0",
+    "@livingsites/application": "0.0.0",
+    "@livingsites/platform": "0.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

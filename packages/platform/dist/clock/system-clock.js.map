@@ -1,0 +1,1 @@
+{"version":3,"file":"system-clock.js","sourceRoot":"","sources":["../../src/clock/system-clock.ts"],"names":[],"mappings":"AAKA,MAAM,OAAO,WAAW;IACtB,MAAM;QACJ,OAAO,IAAI,IAAI,EAAE,CAAC,WAAW,EAAE,CAAC;IAClC,CAAC;IACD,KAAK;QACH,OAAO,IAAI,CAAC,GAAG,EAAE,CAAC;IACpB,CAAC;CACF"}

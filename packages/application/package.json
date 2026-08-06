@@ -1,0 +1,47 @@
+{
+  "name": "@livingsites/application",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Application layer for the Living Sites platform. Repository and service contracts only — no implementation.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./repositories": {
+      "types": "./dist/repositories/index.d.ts",
+      "import": "./dist/repositories/index.js"
+    },
+    "./services": {
+      "types": "./dist/services/index.d.ts",
+      "import": "./dist/services/index.js"
+    },
+    "./use-cases": {
+      "types": "./dist/use-cases/index.d.ts",
+      "import": "./dist/use-cases/index.js"
+    },
+    "./policies": {
+      "types": "./dist/policies/index.d.ts",
+      "import": "./dist/policies/index.js"
+    },
+    "./read-models": {
+      "types": "./dist/read-models/index.d.ts",
+      "import": "./dist/read-models/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@livingsites/domain": "0.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

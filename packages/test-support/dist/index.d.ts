@@ -1,0 +1,22 @@
+/**
+ * @livingsites/test-support — test adapters for the Living Sites platform.
+ *
+ * In-memory repositories, event publishers, and deterministic runtime
+ * for tests and development. NOT for production use.
+ *
+ * Dependency direction:
+ *   test-support → application (contracts)
+ *   test-support → domain (entity types)
+ *   test-support → platform (runtime capabilities)
+ *
+ * Production packages and production entry points must NOT import test-support.
+ */
+export { InMemoryOrganizationRepository, InMemoryPlanRepository, InMemoryFeatureRepository } from "./repositories/in-memory-organization-repository";
+export type { OrganizationReader, OrganizationCreator, PlanReader, FeatureReader } from "./repositories/in-memory-organization-repository";
+export { InMemoryEventPublisher } from "./events/in-memory-event-publisher";
+export { NoopEventPublisher, FakeClock, DeterministicIdGenerator } from "./platform/test-runtime";
+export { runRepositoryContractTests } from "./repositories/contract-tests";
+export type { RepositoryContractFixtures } from "./repositories/contract-tests";
+export { runPlanReaderContractTests, runFeatureReaderContractTests, runOutboxContractTests } from "./repositories/plan-feature-outbox-contract-tests";
+export type { PlanReaderContractFixtures, FeatureReaderContractFixtures, OutboxContractFixtures } from "./repositories/plan-feature-outbox-contract-tests";
+//# sourceMappingURL=index.d.ts.map

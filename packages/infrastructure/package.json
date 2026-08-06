@@ -1,0 +1,32 @@
+{
+  "name": "@livingsites/infrastructure",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Infrastructure layer for Living Sites. Ports & Adapters architecture: provider-capability adapter contracts and repository adapter contracts. No provider implementations, no database, no runtime behavior. Infrastructure depends on Platform and Application; nothing above Infrastructure depends on it directly except Composition.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@livingsites/domain": "0.0.0",
+    "@livingsites/application": "0.0.0",
+    "@livingsites/platform": "0.0.0",
+    "drizzle-orm": "*",
+    "postgres": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "@types/node": "*"
+  }
+}

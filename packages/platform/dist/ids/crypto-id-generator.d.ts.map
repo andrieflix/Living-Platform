@@ -1,0 +1,1 @@
+{"version":3,"file":"crypto-id-generator.d.ts","sourceRoot":"","sources":["../../src/ids/crypto-id-generator.ts"],"names":[],"mappings":"AAIA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,UAAU,CAAC;AAE5C,qBAAa,iBAAkB,YAAW,WAAW;IACnD,QAAQ,IAAI,MAAM;IAIlB,gBAAgB,CAAC,MAAM,EAAE,MAAM,GAAG,MAAM;CAGzC"}

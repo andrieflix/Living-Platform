@@ -1,0 +1,46 @@
+{
+  "name": "living-sites",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/domain",
+    "packages/application",
+    "packages/platform",
+    "packages/infrastructure",
+    "packages/test-support",
+    "packages/composition"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "npm run test:all",
+    "test:unit": "vitest run --exclude packages/infrastructure/src/repositories/netlify-integration.test.ts --exclude packages/infrastructure/src/repositories/organization/drizzle-integration.test.ts --exclude packages/infrastructure/src/repositories/plan-feature/drizzle-plan-feature-outbox.integration.test.ts",
+    "test:integration": "vitest run packages/infrastructure/src/repositories/netlify-integration.test.ts packages/infrastructure/src/repositories/organization/drizzle-integration.test.ts packages/infrastructure/src/repositories/plan-feature/drizzle-plan-feature-outbox.integration.test.ts",
+    "test:db": "vitest run packages/infrastructure/src/repositories/netlify-integration.test.ts",
+    "test:all": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:check": "drizzle-kit check",
+    "db:seed": "node scripts/seed.mjs",
+    "outbox:process": "node scripts/outbox-process.mjs"
+  },
+  "devDependencies": {
+    "typescript": "5.5",
+    "eslint": "^9.0.0",
+    "@eslint/js": "^9.0.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "*",
+    "@types/node": "*",
+    "drizzle-kit": "1.0.0-beta.22",
+    "@netlify/database-dev": "0.10.1"
+  },
+  "dependencies": {
+    "@netlify/database": "1.1.0",
+    "@netlify/functions": "5.3.0",
+    "drizzle-orm": "1.0.0-beta.22"
+  }
+}
