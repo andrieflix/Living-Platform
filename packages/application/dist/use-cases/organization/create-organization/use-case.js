@@ -66,7 +66,7 @@ export async function createOrganization(input, deps) {
     const event = {
         type: "organization.created",
         occurredAt: deps.clock.nowIso(),
-        organizationId: draft.id,
+        eventScope: { scope: "organization", organizationId: draft.id },
         slug: draft.slug,
         planId: draft.planId,
     };

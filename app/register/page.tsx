@@ -1,10 +1,15 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { getAuth } from "@/app/lib/auth";
+import { registerAction } from "@/app/lib/auth-actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function RegisterPage() {
+export default async function RegisterPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   const auth = getAuth();
   const session = await auth.api.getSession({ headers: await headers() });
 
@@ -12,6 +17,8 @@ export default async function RegisterPage() {
     redirect("/admin");
   }
 
+  const params = await searchParams;
+  const error = params.error;
   const registrationMode = process.env.AUTH_REGISTRATION_MODE ?? "invite_only";
 
   if (registrationMode === "disabled") {
@@ -37,7 +44,10 @@ export default async function RegisterPage() {
   return (
     <main style={{ maxWidth: "400px", margin: "80px auto", padding: "0 20px", fontFamily: "system-ui, sans-serif" }}>
       <h1 style={{ fontSize: "1.75rem", marginBottom: "1.5rem" }}>Create Account</h1>
-      <form action="/api/auth/sign-up/email" method="POST" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+      {error && (
+        <p style={{ fontSize: "0.875rem", color: "#dc2626", marginBottom: "1rem" }}>{error}</p>
+      )}
+      <form action={registerAction} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         <label style={{ display: "flex", flexDirection: "column", gap: "4px", fontSize: "0.875rem" }}>
           Display Name
           <input type="text" name="name" required style={{ padding: "8px 12px", border: "1px solid #ccc", borderRadius: "4px" }} />

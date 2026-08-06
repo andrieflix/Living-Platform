@@ -22,11 +22,13 @@ import {
   DrizzleFeatureReader,
   DrizzleUserRepository,
   BetterAuthAdapter,
+  asBetterAuthInstance,
   OutboxEventPublisher,
   DrizzleOrganizationCreationPersistence,
   DrizzleOutboxProcessor,
   MissingNetlifyDatabaseError,
 } from "@livingsites/infrastructure";
+import type { BetterAuthInstance } from "@livingsites/infrastructure";
 import type {
   OrganizationReader,
   OrganizationCreator,
@@ -74,6 +76,7 @@ export interface ProductionComposition {
   readonly userReader: UserReader;
   readonly userCreator: UserCreator;
   readonly authenticationPort: AuthenticationPort;
+  readonly authInstance: BetterAuthInstance;
   readonly emailVerificationPort: EmailVerificationPort | null;
   readonly organizationCreationPersistence: OrganizationCreationPersistence;
   readonly outboxProcessor: OutboxProcessor;
@@ -146,7 +149,7 @@ export function composeProduction(
 
   const db = connection.db;
 
-  const auth = betterAuth({
+  const rawAuth = betterAuth({
     secret: config.betterAuthSecret,
     baseURL: config.betterAuthUrl,
     trustedOrigins: [...config.trustedOrigins],
@@ -186,8 +189,8 @@ export function composeProduction(
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const authenticationPort = new BetterAuthAdapter({ auth: auth as any, logger });
+  const authInstance = asBetterAuthInstance(rawAuth);
+  const authAdapter = new BetterAuthAdapter({ auth: authInstance, logger });
   const organizationRepository = new DrizzleOrganizationRepository({ db, logger });
   const planReader = new DrizzlePlanReader({ db, logger });
   const featureReader = new DrizzleFeatureReader({ db, logger });
@@ -212,7 +215,7 @@ export function composeProduction(
   };
 
   const registerUserDeps: RegisterUserDeps = {
-    authenticationPort,
+    authenticationPort: authAdapter,
     userReader: userRepository,
     userCreator: userRepository,
     eventPublisher,
@@ -254,7 +257,8 @@ export function composeProduction(
     featureReader,
     userReader: userRepository,
     userCreator: userRepository,
-    authenticationPort,
+    authenticationPort: authAdapter,
+    authInstance,
     emailVerificationPort: config.emailAdapter ?? null,
     organizationCreationPersistence,
     outboxProcessor,

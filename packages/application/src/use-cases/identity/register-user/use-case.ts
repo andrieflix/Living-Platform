@@ -145,7 +145,7 @@ export async function registerUser(
   const event: UserRegisteredEvent = {
     type: "user.registered",
     occurredAt: deps.clock.nowIso() as ISODateString,
-    organizationId: null,
+    eventScope: { scope: "platform" },
     userId: user.id,
     email: user.email,
     displayName: user.displayName,

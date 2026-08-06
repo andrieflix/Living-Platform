@@ -1,4 +1,5 @@
 import type { Clock, IdGenerator, Logger } from "@livingsites/platform";
+import type { BetterAuthInstance } from "@livingsites/infrastructure";
 import type { OrganizationReader, OrganizationCreator, PlanReader, FeatureReader, UserReader, UserCreator, EventPublisher, OrganizationCreationPersistence, OutboxProcessor, AuthenticationPort, EmailVerificationPort, RegistrationMode } from "@livingsites/application";
 import { createOrganization, registerUser } from "@livingsites/application";
 import type { CreateOrganizationDeps, RegisterUserDeps } from "@livingsites/application";
@@ -26,6 +27,7 @@ export interface ProductionComposition {
     readonly userReader: UserReader;
     readonly userCreator: UserCreator;
     readonly authenticationPort: AuthenticationPort;
+    readonly authInstance: BetterAuthInstance;
     readonly emailVerificationPort: EmailVerificationPort | null;
     readonly organizationCreationPersistence: OrganizationCreationPersistence;
     readonly outboxProcessor: OutboxProcessor;

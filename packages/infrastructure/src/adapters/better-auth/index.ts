@@ -8,8 +8,6 @@
  * The Better Auth instance is created at the Composition boundary and passed
  * in here. This adapter does not own configuration or secrets.
  */
-import { betterAuth } from "better-auth";
-type BetterAuthInstance = ReturnType<typeof betterAuth>;
 import type {
   AuthenticatedIdentity,
   AuthenticationSession,
@@ -24,6 +22,38 @@ import type {
 } from "@livingsites/application";
 import type { Result, AuthSubjectId } from "@livingsites/domain";
 import type { Logger } from "@livingsites/platform";
+
+export { asBetterAuthInstance } from "./cast";
+
+/**
+ * Minimal structural type for the Better Auth instance. We only use
+ * `.handler`, `.api.signUpEmail`, `.api.signInEmail`, `.api.signOut`,
+ * `.api.getSession`, `.api.revokeSession`, `.api.verifyEmail`,
+ * `.api.sendVerificationEmail`. Defining a structural interface avoids
+ * the generic-incompatibility problem with `ReturnType<typeof betterAuth>`.
+ */
+export interface BetterAuthInstance {
+  handler(req: Request): Response | Promise<Response>;
+  readonly api: {
+    signUpEmail(input: { body: Record<string, unknown> }): Promise<{
+      token: string | null;
+      user: { id: string; email: string; emailVerified: boolean; name: string };
+    } | null>;
+    signInEmail(input: { body: Record<string, unknown> }): Promise<{
+      token: string;
+      user: { id: string; email: string; emailVerified: boolean; name: string };
+      redirect: boolean;
+    } | null>;
+    signOut(input: { headers: Headers }): Promise<{ status: boolean }>;
+    getSession(input: { headers: Headers }): Promise<{
+      session: { token: string; expiresAt: Date };
+      user: { id: string; email: string; emailVerified: boolean; name: string };
+    } | null>;
+    revokeSession(input: { body: Record<string, unknown>; headers: Headers }): Promise<unknown>;
+    verifyEmail(input: { query: { token: string } }): Promise<{ status: boolean } | null>;
+    sendVerificationEmail(input: { body: Record<string, unknown> }): Promise<unknown>;
+  };
+}
 
 export interface BetterAuthAdapterConfig {
   readonly auth: BetterAuthInstance;
@@ -70,17 +100,21 @@ function toSession(token: string, user: { id: string; email: string; emailVerifi
 }
 
 export class BetterAuthAdapter implements AuthenticationPort {
-  private readonly auth: BetterAuthInstance;
+  private readonly _auth: BetterAuthInstance;
   private readonly logger: Logger;
 
   constructor(config: BetterAuthAdapterConfig) {
-    this.auth = config.auth;
+    this._auth = config.auth;
     this.logger = config.logger;
+  }
+
+  get auth(): BetterAuthInstance {
+    return this._auth;
   }
 
   async registerWithEmail(input: RegistrationInput): Promise<RegistrationResult> {
     try {
-      const result = await this.auth.api.signUpEmail({
+      const result = await this._auth.api.signUpEmail({
         body: {
           email: input.email,
           password: input.password,
@@ -112,7 +146,7 @@ export class BetterAuthAdapter implements AuthenticationPort {
 
   async signInWithEmail(input: SignInInput): Promise<SignInResult> {
     try {
-      const result = await this.auth.api.signInEmail({
+      const result = await this._auth.api.signInEmail({
         body: {
           email: input.email,
           password: input.password,
@@ -140,7 +174,7 @@ export class BetterAuthAdapter implements AuthenticationPort {
 
   async signOut(sessionToken: string): Promise<Result<void, AuthenticationError>> {
     try {
-      await this.auth.api.signOut({
+      await this._auth.api.signOut({
         headers: new Headers({ authorization: `Bearer ${sessionToken}` }),
       });
       return { ok: true, value: undefined };
@@ -152,7 +186,7 @@ export class BetterAuthAdapter implements AuthenticationPort {
 
   async getSession(sessionToken: string): Promise<SessionResult> {
     try {
-      const result = await this.auth.api.getSession({
+      const result = await this._auth.api.getSession({
         headers: new Headers({ authorization: `Bearer ${sessionToken}` }),
       });
 
@@ -176,7 +210,7 @@ export class BetterAuthAdapter implements AuthenticationPort {
 
   async revokeSession(sessionToken: string): Promise<Result<void, AuthenticationError>> {
     try {
-      await this.auth.api.revokeSession({
+      await this._auth.api.revokeSession({
         body: { token: sessionToken },
         headers: new Headers({ authorization: `Bearer ${sessionToken}` }),
       });
@@ -189,7 +223,7 @@ export class BetterAuthAdapter implements AuthenticationPort {
 
   async verifyEmail(token: string): Promise<EmailVerificationResult> {
     try {
-      const result = await this.auth.api.verifyEmail({
+      const result = await this._auth.api.verifyEmail({
         query: { token },
       });
 
@@ -216,7 +250,7 @@ export class BetterAuthAdapter implements AuthenticationPort {
 
   async generateEmailVerificationToken(authSubjectId: AuthSubjectId): Promise<Result<string, AuthenticationError>> {
     try {
-      await this.auth.api.sendVerificationEmail({
+      await this._auth.api.sendVerificationEmail({
         body: { email: String(authSubjectId) },
       });
       return { ok: true, value: "" };

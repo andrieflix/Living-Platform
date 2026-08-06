@@ -14,7 +14,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { SystemClock, CryptoIdGenerator, ConsoleLogger } from "@livingsites/platform";
-import { createNetlifyDatabase, DrizzleOrganizationRepository, DrizzlePlanReader, DrizzleFeatureReader, DrizzleUserRepository, BetterAuthAdapter, OutboxEventPublisher, DrizzleOrganizationCreationPersistence, DrizzleOutboxProcessor, MissingNetlifyDatabaseError, } from "@livingsites/infrastructure";
+import { createNetlifyDatabase, DrizzleOrganizationRepository, DrizzlePlanReader, DrizzleFeatureReader, DrizzleUserRepository, BetterAuthAdapter, asBetterAuthInstance, OutboxEventPublisher, DrizzleOrganizationCreationPersistence, DrizzleOutboxProcessor, MissingNetlifyDatabaseError, } from "@livingsites/infrastructure";
 import { createOrganization, registerUser, parseRegistrationMode, DEFAULT_PRODUCTION_REGISTRATION_MODE, } from "@livingsites/application";
 function validateConfig(config) {
     if (!config.betterAuthSecret || config.betterAuthSecret.length < 32) {
@@ -66,7 +66,7 @@ export function composeProduction(config) {
         throw new MissingNetlifyDatabaseError(`Failed to initialize Netlify Database: ${err instanceof Error ? err.message : String(err)}`);
     }
     const db = connection.db;
-    const auth = betterAuth({
+    const rawAuth = betterAuth({
         secret: config.betterAuthSecret,
         baseURL: config.betterAuthUrl,
         trustedOrigins: [...config.trustedOrigins],
@@ -105,8 +105,8 @@ export function composeProduction(config) {
             },
         },
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const authenticationPort = new BetterAuthAdapter({ auth: auth, logger });
+    const authInstance = asBetterAuthInstance(rawAuth);
+    const authAdapter = new BetterAuthAdapter({ auth: authInstance, logger });
     const organizationRepository = new DrizzleOrganizationRepository({ db, logger });
     const planReader = new DrizzlePlanReader({ db, logger });
     const featureReader = new DrizzleFeatureReader({ db, logger });
@@ -129,7 +129,7 @@ export function composeProduction(config) {
         organizationCreationPersistence,
     };
     const registerUserDeps = {
-        authenticationPort,
+        authenticationPort: authAdapter,
         userReader: userRepository,
         userCreator: userRepository,
         eventPublisher,
@@ -169,7 +169,8 @@ export function composeProduction(config) {
         featureReader,
         userReader: userRepository,
         userCreator: userRepository,
-        authenticationPort,
+        authenticationPort: authAdapter,
+        authInstance,
         emailVerificationPort: config.emailAdapter ?? null,
         organizationCreationPersistence,
         outboxProcessor,

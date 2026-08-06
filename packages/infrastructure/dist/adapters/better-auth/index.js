@@ -1,3 +1,4 @@
+export { asBetterAuthInstance } from "./cast";
 function mapAuthError(err) {
     const e = err;
     const message = typeof e?.message === "string" ? e.message : "Authentication error.";
@@ -34,15 +35,18 @@ function toSession(token, user, expiresAt) {
     };
 }
 export class BetterAuthAdapter {
-    auth;
+    _auth;
     logger;
     constructor(config) {
-        this.auth = config.auth;
+        this._auth = config.auth;
         this.logger = config.logger;
+    }
+    get auth() {
+        return this._auth;
     }
     async registerWithEmail(input) {
         try {
-            const result = await this.auth.api.signUpEmail({
+            const result = await this._auth.api.signUpEmail({
                 body: {
                     email: input.email,
                     password: input.password,
@@ -70,7 +74,7 @@ export class BetterAuthAdapter {
     }
     async signInWithEmail(input) {
         try {
-            const result = await this.auth.api.signInEmail({
+            const result = await this._auth.api.signInEmail({
                 body: {
                     email: input.email,
                     password: input.password,
@@ -94,7 +98,7 @@ export class BetterAuthAdapter {
     }
     async signOut(sessionToken) {
         try {
-            await this.auth.api.signOut({
+            await this._auth.api.signOut({
                 headers: new Headers({ authorization: `Bearer ${sessionToken}` }),
             });
             return { ok: true, value: undefined };
@@ -106,7 +110,7 @@ export class BetterAuthAdapter {
     }
     async getSession(sessionToken) {
         try {
-            const result = await this.auth.api.getSession({
+            const result = await this._auth.api.getSession({
                 headers: new Headers({ authorization: `Bearer ${sessionToken}` }),
             });
             if (!result) {
@@ -126,7 +130,7 @@ export class BetterAuthAdapter {
     }
     async revokeSession(sessionToken) {
         try {
-            await this.auth.api.revokeSession({
+            await this._auth.api.revokeSession({
                 body: { token: sessionToken },
                 headers: new Headers({ authorization: `Bearer ${sessionToken}` }),
             });
@@ -139,7 +143,7 @@ export class BetterAuthAdapter {
     }
     async verifyEmail(token) {
         try {
-            const result = await this.auth.api.verifyEmail({
+            const result = await this._auth.api.verifyEmail({
                 query: { token },
             });
             if (!result || !result.status) {
@@ -163,7 +167,7 @@ export class BetterAuthAdapter {
     }
     async generateEmailVerificationToken(authSubjectId) {
         try {
-            await this.auth.api.sendVerificationEmail({
+            await this._auth.api.sendVerificationEmail({
                 body: { email: String(authSubjectId) },
             });
             return { ok: true, value: "" };

@@ -80,7 +80,7 @@ export async function registerUser(input, deps) {
     const event = {
         type: "user.registered",
         occurredAt: deps.clock.nowIso(),
-        organizationId: null,
+        eventScope: { scope: "platform" },
         userId: user.id,
         email: user.email,
         displayName: user.displayName,

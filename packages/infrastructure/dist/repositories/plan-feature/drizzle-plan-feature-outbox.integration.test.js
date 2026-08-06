@@ -131,7 +131,7 @@ describeOrSkip("Drizzle Plan/Feature/Outbox — database integration", () => {
             return {
                 type: "organization.created",
                 occurredAt: "2026-01-01T00:00:00.000Z",
-                organizationId: draftId,
+                eventScope: { scope: "organization", organizationId: draftId },
                 slug,
                 planId: null,
             };
@@ -262,7 +262,7 @@ function makeEventHelper(draftId, slug) {
     return {
         type: "organization.created",
         occurredAt: "2026-01-01T00:00:00.000Z",
-        organizationId: draftId,
+        eventScope: { scope: "organization", organizationId: draftId },
         slug,
         planId: null,
     };

@@ -187,7 +187,7 @@ describeOrSkip("Netlify Database — OrganizationCreationPersistence (atomic)", 
     return {
       type: "organization.created",
       occurredAt: "2026-01-01T00:00:00.000Z" as ISODateString,
-      organizationId: draftId as OrganizationId,
+      eventScope: { scope: "organization", organizationId: draftId as OrganizationId },
       slug,
       planId: null,
     };
@@ -253,7 +253,7 @@ describeOrSkip("Netlify Database — OutboxProcessor", () => {
     return {
       type: "organization.created",
       occurredAt: "2026-01-01T00:00:00.000Z" as ISODateString,
-      organizationId: draftId as OrganizationId,
+      eventScope: { scope: "organization", organizationId: draftId as OrganizationId },
       slug,
       planId: null,
     };
