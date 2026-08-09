@@ -220,7 +220,12 @@ describe("composeDevelopment", () => {
 describe("composeProduction — missing database failure", () => {
   it("fails fast when Netlify Database is unavailable", () => {
     expect(() =>
-      composeProduction({ connectionString: "postgresql://invalid:invalid@invalid:99999/invalid" }),
+      composeProduction({
+        connectionString: "postgresql://invalid:invalid@invalid:99999/invalid",
+        betterAuthSecret: "test-secret-at-least-32-characters-long-xxxxx",
+        betterAuthUrl: "https://example.com",
+        trustedOrigins: ["https://example.com"],
+      }),
     ).toThrow();
   });
 });

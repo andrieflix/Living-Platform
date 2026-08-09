@@ -124,7 +124,7 @@ export async function createOrganization(
   const event: OrganizationCreatedEvent = {
     type: "organization.created",
     occurredAt: deps.clock.nowIso() as ISODateString,
-    organizationId: draft.id,
+    eventScope: { scope: "organization", organizationId: draft.id },
     slug: draft.slug,
     planId: draft.planId,
   };

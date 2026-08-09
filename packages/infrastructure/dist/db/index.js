@@ -6,7 +6,7 @@
  * the Drizzle adapter module. Only approved adapters and composition-facing
  * factories are exported.
  */
-export { organizations, orgStatusEnum, plans, planTierEnum, features, featureCategoryEnum, planFeatureEntitlements, applicationOutbox, } from "./schema";
+export { organizations, orgStatusEnum, plans, planTierEnum, features, featureCategoryEnum, planFeatureEntitlements, applicationOutbox, platformUsers, userStatusEnum, betterAuthUsers, betterAuthSessions, betterAuthAccounts, betterAuthVerifications, } from "./schema";
 export { createDbConnection } from "./connection";
 export { seedPlansAndFeatures, PLAN_FREE_ID, PLAN_LIFETIME_ID, FEATURE_IDS } from "./seed";
 //# sourceMappingURL=index.js.map

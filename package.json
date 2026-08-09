@@ -16,31 +16,40 @@
     "typecheck": "npm run typecheck --workspaces",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "npm run test:all",
-    "test:unit": "vitest run --exclude packages/infrastructure/src/repositories/netlify-integration.test.ts --exclude packages/infrastructure/src/repositories/organization/drizzle-integration.test.ts --exclude packages/infrastructure/src/repositories/plan-feature/drizzle-plan-feature-outbox.integration.test.ts",
-    "test:integration": "vitest run packages/infrastructure/src/repositories/netlify-integration.test.ts packages/infrastructure/src/repositories/organization/drizzle-integration.test.ts packages/infrastructure/src/repositories/plan-feature/drizzle-plan-feature-outbox.integration.test.ts",
+    "test": "npm run test:unit",
+    "test:unit": "vitest run --exclude packages/infrastructure/src/repositories/netlify-integration.test.ts --exclude packages/infrastructure/src/repositories/organization/drizzle-integration.test.ts --exclude packages/infrastructure/src/repositories/plan-feature/drizzle-plan-feature-outbox.integration.test.ts --exclude packages/infrastructure/src/repositories/postgres-compat.test.ts --exclude packages/infrastructure/src/repositories/identity/auth-integration.test.ts --exclude packages/infrastructure/src/repositories/identity/linkage-reconciler.test.ts",
+    "test:integration": "vitest run packages/infrastructure/src/repositories/netlify-integration.test.ts packages/infrastructure/src/repositories/organization/drizzle-integration.test.ts packages/infrastructure/src/repositories/plan-feature/drizzle-plan-feature-outbox.integration.test.ts packages/infrastructure/src/repositories/identity/auth-integration.test.ts packages/infrastructure/src/repositories/identity/linkage-reconciler.test.ts",
     "test:db": "vitest run packages/infrastructure/src/repositories/netlify-integration.test.ts",
-    "test:all": "vitest run",
+    "test:all": "npm run test:unit && npm run test:integration",
+    "test:postgres-compat": "POSTGRES_COMPAT_DATABASE_URL=$POSTGRES_COMPAT_DATABASE_URL vitest run packages/infrastructure/src/repositories/postgres-compat.test.ts",
     "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:check": "drizzle-kit check",
     "db:seed": "node scripts/seed.mjs",
-    "outbox:process": "node scripts/outbox-process.mjs"
+    "outbox:process": "node scripts/outbox-process.mjs",
+    "netlify:db:status": "npx netlify database status",
+    "netlify:db:migrate": "npx netlify database migrations apply",
+    "netlify:dev": "npx netlify dev"
   },
   "devDependencies": {
-    "typescript": "5.5",
-    "eslint": "^9.0.0",
     "@eslint/js": "^9.0.0",
-    "typescript-eslint": "^8.0.0",
-    "vitest": "*",
+    "@netlify/database-dev": "0.10.1",
     "@types/node": "*",
     "drizzle-kit": "1.0.0-beta.22",
-    "@netlify/database-dev": "0.10.1"
+    "eslint": "^9.0.0",
+    "netlify-cli": "^26.0.0",
+    "typescript": "5.5",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "*"
   },
   "dependencies": {
     "@netlify/database": "1.1.0",
     "@netlify/functions": "5.3.0",
-    "drizzle-orm": "1.0.0-beta.22"
+    "better-auth": "^1.6.26",
+    "drizzle-orm": "1.0.0-beta.22",
+    "next": "^16.3.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   }
 }

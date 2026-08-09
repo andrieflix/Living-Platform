@@ -103,6 +103,72 @@ export const applicationOutbox = pgTable("application_outbox", {
   schema_version: text("schema_version").notNull().default("1.0.0"),
 });
 
+/* ---------- Platform Users ---------- */
+
+export const userStatusEnum = pgEnum("user_status", ["active", "archived", "deleted"]);
+
+export const platformUsers = pgTable("platform_users", {
+  id: text("id").primaryKey(),
+  auth_subject_id: text("auth_subject_id").notNull().unique(),
+  email: text("email").notNull().unique(),
+  display_name: text("display_name").notNull(),
+  status: userStatusEnum("status").notNull().default("active"),
+  version: integer("version").notNull().default(1),
+  created_at: timestamp("created_at", { withTimezone: true }).notNull(),
+  updated_at: timestamp("updated_at", { withTimezone: true }).notNull(),
+  created_by: text("created_by"),
+  updated_by: text("updated_by"),
+  deleted_at: timestamp("deleted_at", { withTimezone: true }),
+});
+
+/* ---------- Better Auth Tables ---------- */
+
+export const betterAuthUsers = pgTable("ba_user", {
+  id: text("id").primaryKey(),
+  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  email: text("email").notNull().unique(),
+  email_verified: boolean("email_verified").notNull().default(false),
+  name: text("name").notNull(),
+  image: text("image"),
+});
+
+export const betterAuthSessions = pgTable("ba_session", {
+  id: text("id").primaryKey(),
+  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  user_id: text("user_id").notNull().references(() => betterAuthUsers.id, { onDelete: "cascade" }),
+  expires_at: timestamp("expires_at", { withTimezone: true }).notNull(),
+  token: text("token").notNull().unique(),
+  ip_address: text("ip_address"),
+  user_agent: text("user_agent"),
+});
+
+export const betterAuthAccounts = pgTable("ba_account", {
+  id: text("id").primaryKey(),
+  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  provider_id: text("provider_id").notNull(),
+  account_id: text("account_id").notNull(),
+  user_id: text("user_id").notNull().references(() => betterAuthUsers.id, { onDelete: "cascade" }),
+  access_token: text("access_token"),
+  refresh_token: text("refresh_token"),
+  id_token: text("id_token"),
+  access_token_expires_at: timestamp("access_token_expires_at", { withTimezone: true }),
+  refresh_token_expires_at: timestamp("refresh_token_expires_at", { withTimezone: true }),
+  scope: text("scope"),
+  password: text("password"),
+});
+
+export const betterAuthVerifications = pgTable("ba_verification", {
+  id: text("id").primaryKey(),
+  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  value: text("value").notNull(),
+  expires_at: timestamp("expires_at", { withTimezone: true }).notNull(),
+  identifier: text("identifier").notNull(),
+});
+
 /* ---------- Row types (private to Infrastructure) ---------- */
 
 type OrganizationRow = typeof organizations.$inferSelect;

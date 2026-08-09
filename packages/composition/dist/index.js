@@ -5,12 +5,11 @@
  * contracts are instantiated and wired together.
  *
  * Three composition modes:
- * - composeProduction: uses Netlify Database provider. Fails fast if unavailable.
- * - composePostgresDevelopment: generic PostgreSQL for local dev. Not for production.
- * - composeDevelopment: in-memory adapters for local development. Not for production.
+ * - composeProduction: uses Netlify Database + Better Auth. Fails fast if unavailable.
+ * - composeDevelopment: in-memory + fake adapters for local development. Not for production.
  * - composeTest: deterministic test-support adapters with event capture.
  */
-export { composeProduction, composePostgresDevelopment } from "./production";
+export { composeProduction } from "./production";
 export { MissingNetlifyDatabaseError } from "@livingsites/infrastructure";
 export { composeDevelopment } from "./development";
 export { composeTest } from "./test";

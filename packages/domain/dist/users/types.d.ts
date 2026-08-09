@@ -4,10 +4,16 @@
  * A User is a platform-level identity. A Membership binds a User to a single
  * Organization with a Role. A User may hold memberships in many Organizations.
  */
-import type { UserId, MembershipId, OrganizationId, ISODateString, AuditTrail, LifecycleStatus, AggregateVersion } from "../shared";
+import type { UserId, AuthSubjectId, MembershipId, OrganizationId, ISODateString, AuditTrail, LifecycleStatus, AggregateVersion } from "../shared";
 /** Platform-level user identity. Not scoped to any single organization. */
 export interface User {
     readonly id: UserId;
+    /**
+     * Opaque reference to the authentication-provider subject that owns this
+     * platform identity. Unique across all Platform Users. The Domain never
+     * imports the auth provider — it only stores this linkage.
+     */
+    authSubjectId: AuthSubjectId;
     /** Unique login email, lowercased. */
     email: string;
     /** Display name shown in UI. */

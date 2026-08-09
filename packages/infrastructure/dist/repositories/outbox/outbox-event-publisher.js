@@ -31,6 +31,30 @@ function isConnectionError(err) {
     }
     return false;
 }
+function scopeToOrgId(event) {
+    const s = event.eventScope;
+    if (s.scope === "platform")
+        return null;
+    return String(s.organizationId);
+}
+function scopeToWebsiteId(event) {
+    const s = event.eventScope;
+    if (s.scope === "website")
+        return String(s.websiteId);
+    return null;
+}
+function scopeToAggregateId(event) {
+    const s = event.eventScope;
+    if (s.scope === "platform") {
+        if (event.type === "user.registered" || event.type === "user.email_verified") {
+            return String(event.userId ?? "platform");
+        }
+        return "platform";
+    }
+    if (s.scope === "website")
+        return String(s.websiteId);
+    return String(s.organizationId);
+}
 export class OutboxEventPublisher {
     db;
     logger;
@@ -86,9 +110,9 @@ export class OutboxEventPublisher {
             id: eventId,
             eventType: event.type,
             aggregateType: this.inferAggregateType(event.type),
-            aggregateId: String(event.organizationId),
-            organizationId: event.organizationId ? String(event.organizationId) : null,
-            websiteId: event.websiteId ? String(event.websiteId) : null,
+            aggregateId: scopeToAggregateId(event),
+            organizationId: scopeToOrgId(event),
+            websiteId: scopeToWebsiteId(event),
             payload,
             occurredAt: new Date(event.occurredAt),
             idempotencyKey,
@@ -98,7 +122,7 @@ export class OutboxEventPublisher {
     buildIdempotencyKey(event, eventId) {
         if (event.type === "organization.created") {
             const e = event;
-            return `organization.created:${String(e.organizationId)}`;
+            return `organization.created:${String(e.eventScope.organizationId)}`;
         }
         return `${event.type}:${eventId}`;
     }
@@ -119,16 +143,24 @@ export class OutboxEventPublisher {
             return {
                 type: e.type,
                 occurredAt: e.occurredAt,
-                organizationId: String(e.organizationId),
+                organizationId: String(e.eventScope.organizationId),
                 slug: e.slug,
                 planId: e.planId,
+            };
+        }
+        if (event.type === "user.registered") {
+            const e = event;
+            return {
+                type: e.type,
+                occurredAt: e.occurredAt,
+                userId: String(e.userId),
+                email: e.email,
+                displayName: e.displayName,
             };
         }
         return {
             type: event.type,
             occurredAt: event.occurredAt,
-            organizationId: event.organizationId ? String(event.organizationId) : null,
-            ...(event.websiteId ? { websiteId: String(event.websiteId) } : {}),
         };
     }
 }

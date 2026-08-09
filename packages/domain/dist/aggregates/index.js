@@ -10,7 +10,7 @@
  * Aggregates are plain domain entities with documented boundaries.
  */
 export * from "./organization";
-export * from "./users";
+export { createUserDraft, DRAFT_VERSION as USER_DRAFT_VERSION, } from "./users";
 export * from "./website";
 export * from "./navigation";
 export * from "./theme";
