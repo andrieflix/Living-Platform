@@ -1,5 +1,4 @@
 import type { Clock, IdGenerator, Logger } from "@livingsites/platform";
-import type { DrizzleDB } from "@livingsites/infrastructure";
 import type { BetterAuthInstance } from "@livingsites/infrastructure";
 import type { OrganizationReader, OrganizationCreator, PlanReader, FeatureReader, UserReader, UserCreator, EventPublisher, OrganizationCreationPersistence, OutboxProcessor, AuthenticationPort, EmailVerificationPort, RegistrationMode } from "@livingsites/application";
 import { createOrganization, registerUser } from "@livingsites/application";
@@ -29,7 +28,6 @@ export interface ProductionComposition {
     readonly userCreator: UserCreator;
     readonly authenticationPort: AuthenticationPort;
     readonly authInstance: BetterAuthInstance;
-    readonly db: DrizzleDB;
     readonly emailVerificationPort: EmailVerificationPort | null;
     readonly organizationCreationPersistence: OrganizationCreationPersistence;
     readonly outboxProcessor: OutboxProcessor;
